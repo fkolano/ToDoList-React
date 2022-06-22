@@ -2,51 +2,41 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 export const ToDoList = () => {
-    const [todoList, setToDoList] = useState([])
+  const [todoList, setToDoList] = useState(["Do Homework",
+  "Do Laundry",
+  "Walk the Dog"]);
+  const newToDoList = todoList.map((item, i) => {
     return (
-        <div className="container justify-content-center">
-            <h1>todos</h1>
-           
-            <ul>
-                <li><input placeholder="What needs to be done"></input></li>
-                <li><input placeholder="What needs to be done"></input></li>
-                <li><input placeholder="What needs to be done"></input></li>
-                <li><input placeholder="What needs to be done"></input></li>
-                <li><input placeholder="What needs to be done"></input></li>
-            </ul>
-        </div>
-    )
-    useEffect(
-        () =>
-         
-          fetch("https://assets.breatheco.de/apis/fake/todos/user/fkolano")
-            .then(r => r.json())
-            .then(data => setToDoList(data)),
-        [] 
-      );
-      return (
-        <div>
-          <input
-            onKeyUp={e =>
-              
-              e.keyCode === 13 &&
-              setToDoList(todoList.concat({ label: e.target.value, done: false }))
-            }
-          />
-          <ul>
-            {todoList === null
-              ? "Loading..."
-              : todoList.map(t => (
-                  <li>
-                    {t.label} ({t.done ? "done" : "not done"})
-                  </li>
-                ))}
-          </ul>
-        </div>
-      );
-    };
-    
-    ReactDOM.render(<ToDoList />, document.getElementById("app"));
-    
+      <div key={i}>
+        <li>
+          {item} <button onClick={() => deleteToDoList(i)}>x</button>
+        </li>
+      </div>
+    );
+  });
+  const deleteToDoList = (index) => {
+    const newArray = todoList.filter((item, i) => i != index);
+    setToDoList(newArray);
+  };
+  const newToDo = (onKeyDownEvent) => {
+    if (onKeyDownEvent.keyCode === 13) {
+      let click = onKeyDownEvent.target.value;
+      const todo = [...todoList, click];
+      setToDoList(todo);
+      onKeyDownEvent.target.value = "";
+      
+    }
+  };
 
-
+  return (
+    <div className="container justify-content-center">
+      <h1>todos</h1>
+      <input
+        placeholder="What needs to be done"
+        onKeyDown={newToDo}
+        type="text"
+      ></input>
+      <ul>{newToDoList}</ul>
+    </div>
+  );
+};
